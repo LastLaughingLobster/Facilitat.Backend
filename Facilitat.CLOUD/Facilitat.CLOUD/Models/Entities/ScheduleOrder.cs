@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System;
+using Facilitat.CLOUD.Models.Enums;
 
 namespace Facilitat.CLOUD.Models.Entities
 {
@@ -40,5 +41,9 @@ namespace Facilitat.CLOUD.Models.Entities
 
         public Apartment Apartment { get; set; }
         public User User { get; set; }
+
+        [Required]
+        [Column("Status", TypeName = "smallint")]
+        public ScheduleStatus Status { get; set; }
     }
 }
