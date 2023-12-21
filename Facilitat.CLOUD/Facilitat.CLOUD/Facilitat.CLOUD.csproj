@@ -5,6 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Repositories\NewFolder1\**" />
+    <Compile Remove="Repositories\NewFolder2\**" />
+    <Content Remove="Repositories\NewFolder1\**" />
+    <Content Remove="Repositories\NewFolder2\**" />
+    <EmbeddedResource Remove="Repositories\NewFolder1\**" />
+    <EmbeddedResource Remove="Repositories\NewFolder2\**" />
+    <None Remove="Repositories\NewFolder1\**" />
+    <None Remove="Repositories\NewFolder2\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Dapper" Version="2.1.24" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.32" />

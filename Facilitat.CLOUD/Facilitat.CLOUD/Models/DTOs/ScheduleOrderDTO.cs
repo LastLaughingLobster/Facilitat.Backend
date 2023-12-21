@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Facilitat.CLOUD.Models.Entities;
+using Facilitat.CLOUD.Models.Enums;
+using System;
 
 namespace Facilitat.CLOUD.Models.DTOs
 {
@@ -14,7 +16,27 @@ namespace Facilitat.CLOUD.Models.DTOs
         public string RecurrenceRule { get; set; }
         public string RecurrenceException { get; set; }
         public bool IsAllDay { get; set; }
-        public string Status { get; set; }  
+        public ScheduleStatus Status { get; set; }
+
+        public static implicit operator ScheduleOrderDTO(ScheduleOrder scheduleOrder)
+        {
+            if (scheduleOrder == null) return null;
+
+            return new ScheduleOrderDTO
+            {
+                Id = scheduleOrder.Id,
+                ApartmentId = scheduleOrder.ApartmentID,
+                UserId = scheduleOrder.UserID,
+                Title = scheduleOrder.Title,
+                Start = scheduleOrder.ScheduledTime,
+                End = scheduleOrder.EndTime,
+                Description = scheduleOrder.Description,
+                RecurrenceRule = scheduleOrder.RecurrenceRule,
+                RecurrenceException = scheduleOrder.RecurrenceException,
+                IsAllDay = scheduleOrder.IsAllDay ?? false,
+                Status = scheduleOrder.Status
+            };
+        }
 
     }
 

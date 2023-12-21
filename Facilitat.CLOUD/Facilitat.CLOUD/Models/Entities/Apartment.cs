@@ -7,20 +7,21 @@ namespace Facilitat.CLOUD.Models.Entities
     public class Apartment
     {
         [Key]
+        [Column("Id")]
         public int Id { get; set; }
 
         [ForeignKey("Tower")]
+        [Column("TowerId")]
         public int TowerId { get; set; }
 
         [Required]
         [MaxLength(50)]
+        [Column("Number")]
         public string Number { get; set; }
 
         [ForeignKey("User")]
+        [Column("UserID")]
         public int? UserId { get; set; }
-
-        public Tower Tower { get; set; }
-        public User User { get; set; }
     }
 
 }

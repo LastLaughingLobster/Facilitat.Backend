@@ -25,6 +25,13 @@ namespace Facilitat.CLOUD.Controllers
             return Ok(await _scheduleOrderService.GetAllByTowerAsync(towerId));
         }
 
+        [HttpGet("towerForGrid/{towerId}")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<GridScheduleDTO>>> GetAllByTowerForGrid(int towerId)
+        {
+            return Ok(await _scheduleOrderService.GetAllByTowerForGridAsync(towerId));
+        }
+
         [HttpGet("user/{userId}")]
         [Authorize]
         public async Task<ActionResult<IEnumerable<ScheduleOrderDTO>>> GetAllByUser(int userId)
@@ -44,6 +51,28 @@ namespace Facilitat.CLOUD.Controllers
             return NoContent();
         }
 
-        // Endpoint for creating ScheduleOrders will be added later
+        [HttpPost("create")]
+        [Authorize]
+        public async Task<IActionResult> Create(ScheduleOrderDTO newSchedule)
+        {
+            var success = await _scheduleOrderService.CreateAsync(newSchedule);
+            if (!success)
+            {
+                return Ok();
+            }
+            return NoContent();
+        }
+
+        [HttpPost("update")]
+        [Authorize]
+        public async Task<IActionResult> Update(ScheduleOrderDTO newSchedule)
+        {
+            var success = await _scheduleOrderService.UpdateAsync(newSchedule);
+            if (!success)
+            {
+                return Ok();
+            }
+            return NoContent();
+        }
     }
 }

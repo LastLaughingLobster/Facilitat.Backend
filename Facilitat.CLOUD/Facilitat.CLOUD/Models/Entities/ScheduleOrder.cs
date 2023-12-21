@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System;
 using Facilitat.CLOUD.Models.Enums;
+using Facilitat.CLOUD.Models.DTOs;
 
 namespace Facilitat.CLOUD.Models.Entities
 {
@@ -45,5 +46,26 @@ namespace Facilitat.CLOUD.Models.Entities
         [Required]
         [Column("Status", TypeName = "smallint")]
         public ScheduleStatus Status { get; set; }
+
+        public static explicit operator ScheduleOrder(ScheduleOrderDTO dto)
+        {
+            if (dto == null) return null;
+
+            return new ScheduleOrder
+            {
+                Id = dto.Id,
+                ApartmentID = dto.ApartmentId,
+                UserID = dto.UserId,
+                Title = dto.Title,
+                ScheduledTime = dto.Start,
+                EndTime = dto.End,
+                Description = dto.Description,
+                RecurrenceRule = dto.RecurrenceRule,
+                RecurrenceException = dto.RecurrenceException,
+                IsAllDay = dto.IsAllDay,
+                Status = dto.Status
+            };
+        }
+
     }
 }

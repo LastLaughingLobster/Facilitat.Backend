@@ -1,5 +1,9 @@
 using Facilitat.CLOUD.Repositories.Generic;
+using Facilitat.CLOUD.Repositories.Schedule;
+using Facilitat.CLOUD.Repositories.Towers;
 using Facilitat.CLOUD.Repositories.Users;
+using Facilitat.CLOUD.Services.Schedule;
+using Facilitat.CLOUD.Services.Towers;
 using Facilitat.CLOUD.Services.Users;
 using Facilitat.CLOUD.Utils.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -39,6 +43,12 @@ namespace Facilitat.CLOUD
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
+
+            services.AddScoped<IScheduleRepository, ScheduleRepository>();
+            services.AddScoped<IScheduleService, ScheduleOrderService>();
+
+            services.AddScoped<ITowerRepository, TowerRepository>();
+            services.AddScoped<ITowerService, TowerService>();
 
             services.AddScoped<IDbConnection>(sp => new SqlConnection(Configuration.GetConnectionString("DefaultConnection")));
 

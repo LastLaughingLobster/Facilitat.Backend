@@ -7,14 +7,17 @@ namespace Facilitat.CLOUD.Models.Entities
     public class Tower
     {
         [Key]
+        [Column("Id")]
         public int Id { get; set; }
 
         [Required]
         [MaxLength(255)]
+        [Column("Name")]
         public string Name { get; set; }
 
         [Required]
         [MaxLength(500)]
-        public string Adress { get; set; }
+        [Column("Address")]
+        public string Address { get; set; }
     }
 }
