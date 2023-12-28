@@ -5,18 +5,26 @@ using Facilitat.CLOUD.Repositories.Schedule;
 using System.Linq;
 using Facilitat.CLOUD.Models.Enums;
 using Facilitat.CLOUD.Models.Entities;
-using System;
+using Facilitat.CLOUD.Models.Settings;
+using RabbitMQ.Client;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace Facilitat.CLOUD.Services.Schedule
 {
     public class ScheduleOrderService : IScheduleService
     {
         private readonly IScheduleRepository _scheduleOrderRepository;
+        private readonly IModel _channel; // This should come from RabbitMQ.Client
+        private readonly string _queueName; // Define the queue name
 
-        public ScheduleOrderService(IScheduleRepository scheduleOrderRepository)
+        public ScheduleOrderService(IScheduleRepository scheduleOrderRepository, IModel channel, MyRabbitMQSettings settings)
         {
             _scheduleOrderRepository = scheduleOrderRepository;
+            _channel = channel;
+            _queueName = settings.QueueName; // Assign the queue name from settings
         }
+
 
         public async Task<IEnumerable<ScheduleOrderDTO>> GetAllByTowerAsync(int towerId)
         {
@@ -62,7 +70,29 @@ namespace Facilitat.CLOUD.Services.Schedule
 
         public async Task<bool> CreateAsync(ScheduleOrderDTO newSchedule)
         {
-            return await _scheduleOrderRepository.CreateScheduleOrderAsync(newSchedule);
+            // Attempt to create the schedule order
+            var createResult = await _scheduleOrderRepository.CreateScheduleOrderAsync(newSchedule);
+
+            // Only proceed if the creation was successful
+            if (createResult)
+            {
+                // Serialize the newSchedule object to a JSON string
+                var messageBody = JsonConvert.SerializeObject(newSchedule);
+
+                // Convert the JSON string to a byte array
+                var messageBodyBytes = Encoding.UTF8.GetBytes(messageBody);
+
+                // Publish the message to the queue
+                _channel.BasicPublish(
+                    exchange: "", // Use the default exchange
+                    routingKey: _queueName, // Use the queue name as the routing key
+                    basicProperties: null, // No message properties
+                    body: messageBodyBytes // The message body
+                );
+            }
+
+            // Return the result of the schedule creation
+            return createResult;
         }
 
         public async Task<bool> UpdateAsync(ScheduleOrderDTO newSchedule)

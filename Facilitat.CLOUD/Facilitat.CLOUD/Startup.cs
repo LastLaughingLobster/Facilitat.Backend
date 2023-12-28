@@ -1,4 +1,4 @@
-using Facilitat.CLOUD.Repositories.Generic;
+using Facilitat.CLOUD.Models.Settings;
 using Facilitat.CLOUD.Repositories.Schedule;
 using Facilitat.CLOUD.Repositories.Towers;
 using Facilitat.CLOUD.Repositories.Users;
@@ -9,21 +9,16 @@ using Facilitat.CLOUD.Utils.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using RabbitMQ.Client;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Facilitat.CLOUD
 {
@@ -69,6 +64,25 @@ namespace Facilitat.CLOUD
                             ClockSkew = TimeSpan.Zero
                         };
                     });
+
+
+
+            var rabbitMQConfig = new MyRabbitMQSettings();
+            Configuration.Bind("RabbitMQ", rabbitMQConfig);
+            services.AddSingleton(rabbitMQConfig); // Add MyRabbitMQSettings to the DI container
+
+            var factory = new ConnectionFactory()
+            {
+                HostName = rabbitMQConfig.Hostname,
+                UserName = rabbitMQConfig.Username,
+                Password = rabbitMQConfig.Password
+            };
+
+            var connection = factory.CreateConnection();
+            var channel = connection.CreateModel();
+
+            // Register the channel as a singleton
+            services.AddSingleton<IModel>(channel);
 
             services.AddSwaggerGen(c =>
             {
